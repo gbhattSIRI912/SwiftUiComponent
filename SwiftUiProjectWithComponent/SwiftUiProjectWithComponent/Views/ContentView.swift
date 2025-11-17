@@ -7,11 +7,7 @@
 
 import SwiftUI
 
-
-
-
 struct ContentView: View {
-
     // MARK: - State
     @State private var items: [Item] = [
         .init(title: "Alpha", subtitle: "First item"),
@@ -46,12 +42,11 @@ struct ContentView: View {
         List {
             ForEach(items) { item in
                 row(for: item)
-                    .contentShape(Rectangle()) // make full row tappable
+                    .contentShape(Rectangle())
                     .onTapGesture {
                         if isMultiSelectMode {
                             toggleSelection(for: item)
                         } else {
-                            // Navigate to detail on tap
                             navPath.append(item)
                         }
                     }
@@ -68,7 +63,8 @@ struct ContentView: View {
         }
         .listStyle(.insetGrouped)
         .navigationDestination(for: Item.self) { item in
-            DetailView(item: item)
+            //DetailView(item: item)
+            HeartRateAlertView()
         }
     }
     
@@ -122,14 +118,13 @@ struct ContentView: View {
     }
     
     // MARK: - Actions
-    
     private func toggleSelection(for item: Item) {
         if selection.contains(item.id) {
             selection.remove(item.id)
         } else {
             selection.insert(item.id)
         }
-        // If nothing is selected anymore, exit multi-select automatically
+        
         if selection.isEmpty {
             withAnimation {
                 isMultiSelectMode = false
@@ -138,7 +133,6 @@ struct ContentView: View {
     }
     
     private func delete(at offsets: IndexSet) {
-        // Remove items at offsets and also clear them from selection
         let idsToRemove = offsets.map { items[$0].id }
         items.remove(atOffsets: offsets)
         idsToRemove.forEach { selection.remove($0) }

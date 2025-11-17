@@ -8,11 +8,42 @@
 import SwiftUI
 
 struct CustomToolbarView: View {
+    var backAction: () -> Void
+    var deleteAction: () -> Void
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        // Custom toolbar
+        HStack {
+            Button {
+                backAction()
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "chevron.left")
+                    Text("Back")
+                }
+            }
+            .buttonStyle(.plain)
+            
+            Spacer()
+            
+            Button(role: .destructive) {
+                deleteAction()
+            } label: {
+                Image(systemName: "trash")
+                    .imageScale(.medium)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Delete")
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 12)
+        .background(.thinMaterial)
     }
 }
 
 #Preview {
-    CustomToolbarView()
+    CustomToolbarView(backAction: {
+        print("back Tapped")
+    }, deleteAction: {
+        print("Delete Tapped")
+    })
 }

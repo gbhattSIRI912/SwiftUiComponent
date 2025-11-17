@@ -8,11 +8,23 @@
 import SwiftUI
 
 struct DetailView: View {
+    let item: Item
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(spacing: 12) {
+            Text(item.title)
+                .font(.largeTitle)
+                .bold()
+            Text(item.subtitle)
+                .font(.title3)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .navigationTitle("Detail")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
-    DetailView()
+    DetailView(item: .init(title: "", subtitle: ""))
 }
