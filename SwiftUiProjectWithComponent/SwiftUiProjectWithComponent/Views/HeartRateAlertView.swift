@@ -10,18 +10,17 @@ import SwiftUI
 struct HeartRateAlertView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteAlert = false
-    @State private var items: [Item] = [
-        .init(title: "Alpha", subtitle: "First item"),
-        .init(title: "Beta", subtitle: "Second item"),
-        .init(title: "Gamma", subtitle: "Third item"),
-        .init(title: "Delta", subtitle: "Fourth item"),
-        .init(title: "Epsilon", subtitle: "Fifth item")
+    @State private var items: [HeartRateDto] = [
+        .init(dataUuid: "", deviceUuid: "", comment: "", startTime: 0, endTime: 0, updateTime: 0, timeOffset: 0, min: 95, max: 65, heartRate: 65, average: 65, binningData: .init(), alertHeartRate: false),
+        .init(dataUuid: "", deviceUuid: "", comment: "", startTime: 0, endTime: 0, updateTime: 0, timeOffset: 0, min: 95, max: 65, heartRate: 65, average: 65, binningData: .init(), alertHeartRate: false),
+        .init(dataUuid: "", deviceUuid: "", comment: "", startTime: 0, endTime: 0, updateTime: 0, timeOffset: 0, min: 95, max: 65, heartRate: 65, average: 65, binningData: .init(), alertHeartRate: false),
+        .init(dataUuid: "", deviceUuid: "", comment: "", startTime: 0, endTime: 0, updateTime: 0, timeOffset: 0, min: 95, max: 65, heartRate: 65, average: 65, binningData: .init(), alertHeartRate: false)
     ]
     
     @State private var selection = Set<Item.ID>()
     @State private var isMultiSelectMode = false
     @State private var navPath = NavigationPath()
-
+    @State private var isNavigateDetail: Bool = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -31,26 +30,29 @@ struct HeartRateAlertView: View {
                 showDeleteAlert.toggle()
             })
             
-            // You can also reuse SummaryHStackView here:
             SummaryHStackView()
             
             List {
-                ForEach(items) { item in
-                    row(for: item)
+                ForEach(items.indices, id: \.self) { item in
+                    row(for: items[item])
                         .contentShape(Rectangle())
                         .onTapGesture {
                             if isMultiSelectMode {
-                                toggleSelection(for: item)
+                                toggleSelection(for: items[item])
                             } else {
+                                print(">>>>\(items[item])")
+                                isNavigateDetail = true
+                                
                                 navPath.append(item)
                             }
+                           
                         }
                         .onLongPressGesture(minimumDuration: 0.35) {
                             withAnimation {
                                 if !isMultiSelectMode {
                                     isMultiSelectMode = true
                                 }
-                                toggleSelection(for: item)
+                                toggleSelection(for: items[item])
                             }
                         }
                 }
@@ -58,6 +60,10 @@ struct HeartRateAlertView: View {
         }
         .background(.thinMaterial)
         .navigationBarBackButtonHidden(true)
+        .navigationDestination(isPresented: $isNavigateDetail, destination: {
+           // DetailView(item: heartRateData!)
+            DetailView(item: <#T##HeartRateDto#>)
+        })
         .alert("Delete item?", isPresented: $showDeleteAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Delete", role: .destructive) {
@@ -68,7 +74,7 @@ struct HeartRateAlertView: View {
         }
     }
     
-    private func row(for item: Item) -> some View {
+    private func row(for item: HeartRateDto) -> some View {
         HStack(spacing: 12) {
             if isMultiSelectMode {
                 Image(systemName: selection.contains(item.id) ? "checkmark.circle.fill" : "circle")
@@ -77,9 +83,9 @@ struct HeartRateAlertView: View {
             }
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(item.title)
+                    Text("\(item.min)-\(item.max)bpm")
                         .font(.headline)
-                    Text(item.subtitle)
+                    Text("\(item.startTime)- \(item.endTime) PM")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -95,7 +101,7 @@ struct HeartRateAlertView: View {
     }
     
     
-    private func toggleSelection(for item: Item) {
+    private func toggleSelection(for item: HeartRateDto) {
         if selection.contains(item.id) {
             selection.remove(item.id)
         } else {
@@ -109,10 +115,3 @@ struct HeartRateAlertView: View {
         }
     }
 }
-
-#Preview {
-    NavigationStack {
-        HeartRateAlertView()
-    }
-}
-

@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct DetailView: View {
-    let item: Item
+    var item: HeartRateDto
     
     var body: some View {
         VStack(spacing: 12) {
-            Text(item.title)
+            Text("\(item.min)")
                 .font(.largeTitle)
                 .bold()
-            Text(item.subtitle)
+            Text("\(item.max)")
                 .font(.title3)
                 .foregroundStyle(.secondary)
         }
@@ -23,8 +23,4 @@ struct DetailView: View {
         .navigationTitle("Detail")
         .navigationBarTitleDisplayMode(.inline)
     }
-}
-
-#Preview {
-    DetailView(item: .init(title: "", subtitle: ""))
 }
